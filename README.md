@@ -46,8 +46,8 @@ The system evaluates candidate profiles, identifies missing skills and generates
 
 ## Project Structure
 
-```text
-AI-Resume-Screening-System/
+
+HireSense-AI/
 │
 ├── app.py
 ├── config.py
@@ -80,11 +80,11 @@ Installation and Setup
 
 1. Clone the Repository
 
-git clone https://github.com/YOUR-USERNAME/AI-Resume-Screening-System.git
+git clone https://github.com/meghanahn-29/HireSense-AI.git
 
 2. Navigate to the Project
 
-cd AI-Resume-Screening-System
+cd HireSense-AI
 
 3. Create a Virtual Environment
 
