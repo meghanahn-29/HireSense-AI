@@ -1,0 +1,391 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Screening | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid upload-page-container">
+
+    <!-- Page Header -->
+    <div class="upload-page-header">
+
+        <div>
+            <span class="upload-page-label">CANDIDATE SCREENING</span>
+            <h1>Resume Analysis</h1>
+            <p>Upload resumes and evaluate candidates using AI-powered screening.</p>
+        </div>
+
+        <a href="{{ url_for('job_details', job_id=job.id) }}"
+           class="btn btn-outline-light">
+            ← Back to Job
+        </a>
+
+    </div>
+
+
+    <!-- Upload Section -->
+    <div class="card upload-card mb-4">
+
+        <div class="card-header upload-card-header">
+            <h5>Upload Candidate Resumes</h5>
+            <p>Job Position: {{ job.title }}</p>
+        </div>
+
+        <div class="card-body">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endwith %}
+
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <div class="resume-upload-area">
+
+                    <div class="upload-icon">↑</div>
+
+                    <h5>Select Candidate Resumes</h5>
+
+                    <p>
+                        Choose one or multiple PDF resumes for screening.
+                    </p>
+
+                    <input type="file"
+                           name="resumes"
+                           class="form-control"
+                           accept=".pdf,application/pdf"
+                           multiple
+                           required>
+
+                    <small>
+                        Supported format: PDF · Maximum request size: 10 MB
+                    </small>
+
+                </div>
+
+
+                <div class="upload-form-actions">
+
+                    <a href="{{ url_for('job_details', job_id=job.id) }}"
+                       class="btn btn-outline-light">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Upload and Analyze Resumes →
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Screening Results -->
+    <div class="card screening-results-card">
+
+        <div class="card-header screening-results-header">
+
+            <div>
+                <h5>AI Screening Results</h5>
+                <p>Candidate matching analysis for {{ job.title }}.</p>
+            </div>
+
+            {% if application_results %}
+                <span class="screening-count">
+                    {{ application_results|length }} Candidates
+                </span>
+            {% endif %}
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if application_results %}
+
+                <div class="screening-table-info">
+                    <p>
+                        Candidates are displayed with their matching scores,
+                        skill coverage and improvement suggestions.
+                    </p>
+                </div>
+
+
+                <div class="table-responsive screening-table-wrapper">
+
+                    <table class="table screening-table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Candidate</th>
+                                <th>Email</th>
+                                <th>Overall Match</th>
+                                <th>Skill Coverage</th>
+                                <th>TF-IDF</th>
+                                <th>SBERT</th>
+                                <th>Matched Required Skills</th>
+                                <th>Missing Required Skills</th>
+                                <th>Matched Preferred Skills</th>
+                                <th>Missing Preferred Skills</th>
+                                <th>Improvement Suggestions</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for result in application_results %}
+
+                                {% set matching = result.matching %}
+
+                                <tr>
+
+                                    <td>
+                                        <span class="rank-badge">
+                                            #{{ loop.index }}
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+                                        <strong class="screening-candidate-name">
+                                            {{ result.candidate.name }}
+                                        </strong>
+                                    </td>
+
+
+                                    <td>{{ result.candidate.email }}</td>
+
+
+                                    <!-- Overall Score -->
+                                    <td>
+
+                                        {% if result.overall_score is not none %}
+
+                                            <strong class="overall-match-value">
+                                                {{ result.overall_score }}%
+                                            </strong>
+
+                                            <div class="progress screening-progress">
+                                                <div class="progress-bar bg-primary"
+                                                     role="progressbar"
+                                                     style="width: {{ result.overall_score }}%;">
+                                                </div>
+                                            </div>
+
+                                        {% else %}
+
+                                            <span class="text-muted">Not available</span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Skill Coverage -->
+                                    <td>
+
+                                        <strong class="skill-coverage-value">
+                                            {{ matching.skill_match_score }}%
+                                        </strong>
+
+                                        <small class="d-block screening-muted">
+                                            {{ matching.matched_required_count }}
+                                            / {{ matching.total_required_skills }}
+                                            required skills
+                                        </small>
+
+                                        <div class="progress screening-progress">
+                                            <div class="progress-bar bg-success"
+                                                 role="progressbar"
+                                                 style="width: {{ matching.skill_match_score }}%;">
+                                            </div>
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>{{ result.tfidf_score }}%</td>
+
+                                    <td>{{ result.semantic_score }}%</td>
+
+
+                                    <!-- Matched Required Skills -->
+                                    <td>
+
+                                        {% if matching.matched_required_skills %}
+
+                                            {% for skill in matching.matched_required_skills %}
+                                                <span class="screening-skill matched-skill">
+                                                    {{ skill }}
+                                                </span>
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <span class="screening-muted">None</span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Missing Required Skills -->
+                                    <td>
+
+                                        {% if matching.missing_required_skills %}
+
+                                            {% for skill in matching.missing_required_skills %}
+                                                <span class="screening-skill missing-skill">
+                                                    {{ skill }}
+                                                </span>
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <span class="screening-skill matched-skill">
+                                                None
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Matched Preferred Skills -->
+                                    <td>
+
+                                        {% if matching.matched_preferred_skills %}
+
+                                            {% for skill in matching.matched_preferred_skills %}
+                                                <span class="screening-skill preferred-matched-skill">
+                                                    {{ skill }}
+                                                </span>
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <span class="screening-muted">None</span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Missing Preferred Skills -->
+                                    <td>
+
+                                        {% if matching.missing_preferred_skills %}
+
+                                            {% for skill in matching.missing_preferred_skills %}
+                                                <span class="screening-skill preferred-missing-skill">
+                                                    {{ skill }}
+                                                </span>
+                                            {% endfor %}
+
+                                        {% else %}
+
+                                            <span class="screening-muted">None</span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Improvement Suggestions -->
+                                    <td>
+
+                                        {% if matching.improvement_suggestions %}
+
+                                            <ul class="screening-suggestions">
+
+                                                {% for suggestion in matching.improvement_suggestions %}
+                                                    <li>{{ suggestion }}</li>
+                                                {% endfor %}
+
+                                            </ul>
+
+                                        {% else %}
+
+                                            <span class="suggestion-success">
+                                                No required skill gaps identified.
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Scoring Information -->
+                <div class="scoring-information">
+
+                    <h6>Understanding the Screening Scores</h6>
+
+                    <p>Overall Match Score combines three components:</p>
+
+                    <div class="scoring-breakdown">
+                        <span>Skill Match: <strong>40%</strong></span>
+                        <span>TF-IDF Similarity: <strong>20%</strong></span>
+                        <span>SBERT Similarity: <strong>40%</strong></span>
+                    </div>
+
+                    <p class="scoring-disclaimer">
+                        These are experimental weights. Scores are similarity
+                        indicators, not probabilities of hiring success.
+                        Recruiters should review the actual resumes before
+                        making hiring decisions.
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <div class="screening-empty-state">
+
+                    <div class="empty-screening-icon">📄</div>
+
+                    <h4>No Screening Results Yet</h4>
+
+                    <p>
+                        Upload candidate resumes to generate AI screening
+                        results for this job.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="upload-page-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

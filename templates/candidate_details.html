@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+
+{% block title %}Candidate Report | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container candidate-report-container">
+
+    <!-- Page Header -->
+    <div class="candidate-report-header">
+
+        <div>
+            <span class="report-label">CANDIDATE EVALUATION</span>
+            <h1>Candidate Screening Report</h1>
+            <p>{{ application.job.title }}</p>
+        </div>
+
+        <a href="{{ url_for('view_applicants', job_id=application.job_id) }}"
+           class="btn btn-outline-light">
+            ← Back to Applicants
+        </a>
+
+    </div>
+
+
+    <!-- Candidate Information -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>Candidate Information</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+                    <span class="report-field-label">CANDIDATE NAME</span>
+                    <p class="report-field-value">{{ candidate.name }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="report-field-label">EMAIL ADDRESS</span>
+                    <p class="report-field-value">{{ candidate.email }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="report-field-label">PHONE NUMBER</span>
+                    <p class="report-field-value">
+                        {{ candidate.phone or 'Not available' }}
+                    </p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="report-field-label">LOCATION</span>
+                    <p class="report-field-value">
+                        {{ candidate.location or 'Not available' }}
+                    </p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <span class="report-field-label">APPLICATION STATUS</span>
+                    <p class="report-field-value">
+
+                        {% if application.status == 'Shortlisted' %}
+                            <span class="candidate-status status-shortlisted">
+                                Shortlisted
+                            </span>
+
+                        {% elif application.status == 'Rejected' %}
+                            <span class="candidate-status status-rejected">
+                                Rejected
+                            </span>
+
+                        {% else %}
+                            <span class="candidate-status status-pending">
+                                Pending
+                            </span>
+                        {% endif %}
+
+                    </p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <span class="report-field-label">APPLICATION DATE</span>
+                    <p class="report-field-value">
+                        {{ application.applied_at }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recruiter Decision -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>Recruiter Decision</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if analysis and analysis.overall_score is not none %}
+
+                {% set score = analysis.overall_score|float %}
+
+                <div class="recommendation-box">
+
+                    <span class="report-field-label">AI MATCH RECOMMENDATION</span>
+
+                    {% if score >= 80 %}
+                        <h3 class="recommendation-strong">Strong Match</h3>
+                        <p>Excellent alignment with the job requirements.</p>
+
+                    {% elif score >= 60 %}
+                        <h3 class="recommendation-good">Good Match</h3>
+                        <p>Good alignment with the job requirements.</p>
+
+                    {% elif score >= 40 %}
+                        <h3 class="recommendation-moderate">Moderate Match</h3>
+                        <p>Some relevant skills and qualifications identified.</p>
+
+                    {% else %}
+                        <h3 class="recommendation-low">Low Match</h3>
+                        <p>Limited alignment with the job requirements.</p>
+                    {% endif %}
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    AI recommendation is unavailable because screening analysis is missing.
+                </p>
+
+            {% endif %}
+
+
+            <hr class="report-divider">
+
+            <h6 class="decision-heading">Make Your Hiring Decision</h6>
+
+            <p class="report-description">
+                Review the candidate's screening results before making your decision.
+            </p>
+
+
+              <div class="decision-buttons">
+
+    {% if application.status == 'Pending' %}
+
+        <form method="POST"
+              action="{{ url_for('update_application_status', application_id=application.id) }}">
+
+            <input type="hidden" name="status" value="Shortlisted">
+
+            <button type="submit" class="btn btn-success">
+                ✓ Shortlist Candidate
+            </button>
+
+        </form>
+
+        <form method="POST"
+              action="{{ url_for('update_application_status', application_id=application.id) }}">
+
+            <input type="hidden" name="status" value="Rejected">
+
+            <button type="submit" class="btn btn-danger">
+                ✕ Reject Candidate
+            </button>
+
+        </form>
+
+    {% elif application.status == 'Shortlisted' %}
+
+        <span class="badge bg-success p-2">
+            ✓ Candidate is Shortlisted
+        </span>
+
+        <form method="POST"
+              action="{{ url_for('update_application_status', application_id=application.id) }}">
+
+            <input type="hidden" name="status" value="Rejected">
+
+            <button type="submit" class="btn btn-danger">
+                Change Decision to Rejected
+            </button>
+
+        </form>
+
+    {% elif application.status == 'Rejected' %}
+
+        <span class="badge bg-danger p-2">
+            ✕ Candidate is Rejected
+        </span>
+
+        <form method="POST"
+              action="{{ url_for('update_application_status', application_id=application.id) }}">
+
+            <input type="hidden" name="status" value="Shortlisted">
+
+            <button type="submit" class="btn btn-success">
+                Change Decision to Shortlisted
+            </button>
+
+        </form>
+
+    {% endif %}
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI Screening Results -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>AI Screening Results</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if analysis %}
+
+                <div class="row">
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="screening-score-card">
+                            <span>SKILL MATCH</span>
+                            <h2 class="score-blue">
+                                {{ analysis.skill_match_score or 0 }}%
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="screening-score-card">
+                            <span>TF-IDF SIMILARITY</span>
+                            <h2 class="score-cyan">
+                                {{ analysis.tfidf_score or 0 }}%
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="screening-score-card">
+                            <span>SBERT SIMILARITY</span>
+                            <h2 class="score-orange">
+                                {{ analysis.semantic_score or 0 }}%
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div class="screening-score-card overall-score-card">
+                            <span>OVERALL SCORE</span>
+                            <h2 class="score-green">
+                                {{ analysis.overall_score or 0 }}%
+                            </h2>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="report-divider">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <span class="report-field-label">MODEL VERSION</span>
+                        <p class="report-field-value">
+                            {{ analysis.model_version or 'Not available' }}
+                        </p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <span class="report-field-label">ANALYSIS DATE</span>
+                        <p class="report-field-value">
+                            {{ analysis.analysis_date }}
+                        </p>
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    Screening analysis is not available for this candidate.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Uploaded Resume -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>Uploaded Resume</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if resume %}
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <span class="report-field-label">ORIGINAL FILENAME</span>
+                        <p class="report-field-value">
+                            {{ resume.original_filename }}
+                        </p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <span class="report-field-label">UPLOAD DATE</span>
+                        <p class="report-field-value">
+                            {{ resume.uploaded_at }}
+                        </p>
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">No resume available.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Extracted Resume Content -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>Extracted Resume Content</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if resume and resume.extracted_text %}
+
+                <div class="resume-text-content">
+                    {{ resume.extracted_text }}
+                </div>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No extracted resume content available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- AI Feedback -->
+    <div class="card report-card mb-4">
+
+        <div class="card-header report-card-header">
+            <h5>AI Feedback</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if feedbacks %}
+
+                {% for feedback in feedbacks %}
+
+                    <div class="feedback-content">
+
+                        <div class="feedback-text">
+                            {{ feedback.feedback_text }}
+                        </div>
+
+                        <div class="feedback-footer">
+                            Generated by: {{ feedback.generated_by }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p class="text-muted">
+                    No AI feedback available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="report-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

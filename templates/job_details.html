@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Details | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container job-details-container">
+
+    <!-- Page Header -->
+    <div class="job-details-header">
+
+        <div>
+            <span class="job-details-label">JOB MANAGEMENT</span>
+            <h1>Job Overview</h1>
+            <p>Review job requirements and manage candidate applications.</p>
+        </div>
+
+        <a href="{{ url_for('jobs') }}" class="btn btn-outline-light">
+            ← Back to Jobs
+        </a>
+
+    </div>
+
+
+    <!-- Job Information -->
+    <div class="card job-details-card mb-4">
+
+        <div class="card-header job-details-card-header">
+            <h5>Job Information</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="job-title-section">
+                <span class="job-active-label">JOB POSITION</span>
+                <h2>{{ job.title }}</h2>
+            </div>
+
+            <hr class="job-details-divider">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+                    <span class="job-field-label">LOCATION</span>
+                    <p>{{ job.location or 'Not specified' }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="job-field-label">EMPLOYMENT TYPE</span>
+                    <p>{{ job.employment_type or 'Not specified' }}</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="job-field-label">MINIMUM EXPERIENCE</span>
+                    <p>{{ job.min_experience_years or 0 }} years</p>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <span class="job-field-label">EDUCATION</span>
+                    <p>{{ job.education or 'Not specified' }}</p>
+                </div>
+
+            </div>
+
+            <div class="job-description-section">
+
+                <span class="job-field-label">JOB DESCRIPTION</span>
+
+                <p>{{ job.description or 'No description available.' }}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Skills Section -->
+    <div class="card job-details-card mb-4">
+
+        <div class="card-header job-details-card-header">
+            <h5>Required and Preferred Skills</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="skill-legend">
+                <span class="required-dot"></span> Required Skills
+                <span class="preferred-dot"></span> Preferred Skills
+            </div>
+
+            <div class="job-skills-list">
+
+                {% for item in job.job_skills %}
+
+                    <span class="job-skill-badge
+                        {% if item.is_required %}
+                            required-skill
+                        {% else %}
+                            preferred-skill
+                        {% endif %}">
+
+                        {{ item.skill.skill_name }}
+
+                        {% if item.is_required %}
+                            <small>Required</small>
+                        {% else %}
+                            <small>Preferred</small>
+                        {% endif %}
+
+                    </span>
+
+                {% else %}
+
+                    <p class="text-muted">No skills specified for this job.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Job Actions -->
+    <div class="card job-details-card mb-4">
+
+        <div class="card-header job-details-card-header">
+            <h5>Recruitment Actions</h5>
+        </div>
+
+        <div class="card-body">
+
+            <p class="job-action-description">
+                Manage resumes and review candidates applying for this position.
+            </p>
+
+            <div class="job-action-buttons">
+
+                <a href="{{ url_for('upload_resumes', job_id=job.id) }}"
+                   class="btn btn-primary">
+                    ↑ Upload Candidate Resumes
+                </a>
+
+                <a href="{{ url_for('view_applicants', job_id=job.id) }}"
+                   class="btn btn-success">
+                    View Applicants →
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="job-details-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block title %}HireSense AI | Intelligent Recruitment{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+
+<section class="hero-section">
+
+    <div class="hero-content">
+
+        <span class="hero-badge">
+            AI-POWERED RECRUITMENT PLATFORM
+        </span>
+
+        <h1>
+            Hire Smarter.<br>
+            <span>Find Better Talent.</span>
+        </h1>
+
+        <p>
+            Transform your recruitment process with intelligent
+            resume screening, advanced skill matching and
+            AI-powered candidate insights.
+        </p>
+
+        <div class="hero-buttons">
+
+            {% if session.get('user') %}
+
+                <a href="/dashboard" class="btn btn-primary btn-lg">
+                    Go to Dashboard
+                </a>
+
+            {% else %}
+
+                <a href="/register" class="btn btn-primary btn-lg">
+                    Get Started
+                </a>
+
+                <a href="/login" class="btn btn-outline-light btn-lg">
+                    Recruiter Login
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="hero-visual">
+
+        <div class="visual-card">
+
+            <div class="visual-header">
+                <span>Resume Analysis</span>
+                <span class="status-indicator">● Completed</span>
+            </div>
+
+            <div class="score-circle">
+                <div>
+                    <h2>92%</h2>
+                    <small>Match Score</small>
+                </div>
+            </div>
+
+            <div class="visual-stat">
+                <span>Skill Matching</span>
+                <strong>Excellent</strong>
+            </div>
+
+            <div class="visual-stat">
+                <span>Resume Analysis</span>
+                <strong>Completed</strong>
+            </div>
+
+            <div class="visual-stat">
+                <span>AI Feedback</span>
+                <strong>Generated</strong>
+            </div>
+
+            <div class="visual-footer">
+                Powered by HireSense AI
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEATURES SECTION -->
+
+<section class="features-section" id="features">
+
+    <div class="section-heading">
+
+        <span>OUR CAPABILITIES</span>
+
+        <h2>Everything You Need to Hire Better</h2>
+
+        <p>
+            Powerful tools designed to make candidate evaluation
+            smarter, faster and more organized.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">AI</div>
+
+                <h4>AI Resume Analysis</h4>
+
+                <p>
+                    Analyze candidate resumes and generate
+                    intelligent feedback using AI.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">01</div>
+
+                <h4>Skill Matching</h4>
+
+                <p>
+                    Identify matching and missing skills based
+                    on job requirements.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">02</div>
+
+                <h4>Smart Scoring</h4>
+
+                <p>
+                    Evaluate candidates using skill matching,
+                    TF-IDF and semantic similarity.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">03</div>
+
+                <h4>Candidate Insights</h4>
+
+                <p>
+                    Review candidate performance, strengths
+                    and areas that need improvement.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+
+<section class="workflow-section" id="how-it-works">
+
+    <div class="section-heading">
+
+        <span>SIMPLE WORKFLOW</span>
+
+        <h2>How HireSense AI Works</h2>
+
+        <p>
+            Four simple steps to make recruitment more efficient.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="workflow-card">
+
+                <div class="step-number">01</div>
+
+                <h5>Create a Job</h5>
+
+                <p>
+                    Add job descriptions and define required skills.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="workflow-card">
+
+                <div class="step-number">02</div>
+
+                <h5>Upload Resumes</h5>
+
+                <p>
+                    Upload multiple candidate resumes in PDF format.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="workflow-card">
+
+                <div class="step-number">03</div>
+
+                <h5>Analyze Candidates</h5>
+
+                <p>
+                    Evaluate skills and calculate candidate matching scores.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="workflow-card">
+
+                <div class="step-number">04</div>
+
+                <h5>Get AI Insights</h5>
+
+                <p>
+                    Review candidate reports and AI-generated feedback.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CALL TO ACTION -->
+
+<section class="cta-section">
+
+    <h2>Ready to Transform Your Hiring Process?</h2>
+
+    <p>
+        Start evaluating resumes with smarter insights
+        and a more organized recruitment workflow.
+    </p>
+
+    {% if session.get('user') %}
+
+        <a href="/dashboard" class="btn btn-primary btn-lg">
+            Open Dashboard
+        </a>
+
+    {% else %}
+
+        <a href="/register" class="btn btn-primary btn-lg">
+            Start Hiring Smarter
+        </a>
+
+    {% endif %}
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer class="hiresense-footer">
+
+    <h4>HireSense<span>AI</span></h4>
+
+    <p>
+        Intelligent Resume Screening. Smarter Recruitment.
+    </p>
+
+    <div class="footer-line"></div>
+
+    <small>
+        © 2026 HireSense AI. All rights reserved.
+    </small>
+
+</footer>
+
+{% endblock %}

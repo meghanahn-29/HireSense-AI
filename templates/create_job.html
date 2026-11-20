@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Job | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container create-job-container">
+
+    <!-- Page Header -->
+    <div class="create-job-header">
+
+        <div>
+            <span class="create-job-label">RECRUITMENT MANAGEMENT</span>
+            <h1>Create Job Posting</h1>
+            <p>Define your job requirements and find the right candidates.</p>
+        </div>
+
+        <a href="{{ url_for('jobs') }}" class="btn btn-outline-light">
+            ← Back to Jobs
+        </a>
+
+    </div>
+
+
+    <!-- Create Job Form -->
+    <div class="card create-job-card">
+
+        <div class="card-header create-job-card-header">
+            <h5>Job Information</h5>
+            <p>Enter the details of the position you want to publish.</p>
+        </div>
+
+        <div class="card-body">
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+
+                <!-- Basic Information -->
+                <div class="form-section-heading">
+                    <h6>Basic Information</h6>
+                    <p>Provide the position details.</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Job Title <span>*</span></label>
+
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="e.g. Python Full Stack Developer"
+                           required>
+                </div>
+
+
+                <div class="mb-4">
+                    <label class="form-label">Job Description <span>*</span></label>
+
+                    <textarea name="description"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Describe the role, responsibilities and expectations..."
+                              required></textarea>
+                </div>
+
+
+                <hr class="create-job-divider">
+
+
+                <!-- Employment Details -->
+                <div class="form-section-heading">
+                    <h6>Employment Details</h6>
+                    <p>Specify the location and experience requirements.</p>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Location</label>
+
+                        <input type="text"
+                               name="location"
+                               class="form-control"
+                               placeholder="e.g. Bengaluru">
+                    </div>
+
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Employment Type</label>
+
+                        <select name="employment_type"
+                                class="form-select">
+
+                            <option value="">Select employment type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Contract">Contract</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Minimum Experience (Years)</label>
+
+                        <input type="number"
+                               name="min_experience_years"
+                               class="form-control"
+                               min="0"
+                               max="999.9"
+                               step="0.1"
+                               value="0">
+                    </div>
+
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Education</label>
+
+                        <input type="text"
+                               name="education"
+                               class="form-control"
+                               placeholder="e.g. BE / BTech / MCA">
+                    </div>
+
+                </div>
+
+
+                <hr class="create-job-divider">
+
+
+                <!-- Skills -->
+                <div class="form-section-heading">
+                    <h6>Required Skills</h6>
+                    <p>Specify the technical skills candidates should possess.</p>
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">Required Skills</label>
+
+                    <textarea name="required_skills"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Python, Flask, MySQL"></textarea>
+
+                    <small class="form-help-text">
+                        Separate multiple skills using commas.
+                    </small>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label class="form-label">Preferred Skills</label>
+
+                    <textarea name="preferred_skills"
+                              class="form-control"
+                              rows="3"
+                              placeholder="JavaScript, HTML, CSS"></textarea>
+
+                    <small class="form-help-text">
+                        Optional additional skills that would be an advantage.
+                    </small>
+
+                </div>
+
+
+                <!-- Form Actions -->
+                <div class="create-job-actions">
+
+                    <a href="{{ url_for('jobs') }}"
+                       class="btn btn-outline-light">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Publish Job →
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="create-job-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

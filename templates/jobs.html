@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}My Jobs | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container jobs-container">
+
+    <!-- Page Header -->
+    <div class="jobs-page-header">
+
+        <div>
+            <span class="jobs-label">RECRUITMENT MANAGEMENT</span>
+            <h1>My Job Postings</h1>
+            <p>Manage your job openings and review recruitment activities.</p>
+        </div>
+
+        <a href="{{ url_for('create_job') }}" class="btn btn-primary">
+            + Create New Job
+        </a>
+
+    </div>
+
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+
+    <!-- Job Listings -->
+    {% if jobs %}
+
+        <div class="jobs-section-heading">
+            <h3>Your Job Openings</h3>
+            <span>{{ jobs|length }} Jobs</span>
+        </div>
+
+        <div class="row">
+
+            {% for job in jobs %}
+
+                <div class="col-lg-6 mb-4">
+
+                    <div class="job-listing-card">
+
+                        <div class="job-listing-top">
+
+                            <div class="job-icon">
+                                {{ job.title[0]|upper }}
+                            </div>
+
+                            <span class="job-status-badge">
+                                {{ job.status }}
+                            </span>
+
+                        </div>
+
+
+                        <h4>{{ job.title }}</h4>
+
+                        <div class="job-listing-info">
+
+                            <div>
+                                <span>LOCATION</span>
+                                <p>{{ job.location or 'Not specified' }}</p>
+                            </div>
+
+                            <div>
+                                <span>EMPLOYMENT TYPE</span>
+                                <p>{{ job.employment_type or 'Not specified' }}</p>
+                            </div>
+
+                            <div>
+                                <span>MINIMUM EXPERIENCE</span>
+                                <p>{{ job.min_experience_years or 0 }} years</p>
+                            </div>
+
+                        </div>
+
+
+                       <div class="job-listing-footer">
+
+    <a href="{{ url_for('job_details', job_id=job.id) }}"
+       class="btn btn-primary">
+        View Job Details →
+    </a>
+
+    <form method="POST"
+          action="{{ url_for('delete_job', job_id=job.id) }}"
+          onsubmit="return confirm('Are you sure you want to permanently delete this job and its associated recruitment records? This action cannot be undone.');">
+
+        <button type="submit" class="btn btn-danger">
+            Delete Job
+        </button>
+
+    </form>
+
+</div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="jobs-empty-state">
+
+            <div class="empty-job-icon">+</div>
+
+            <h3>No Job Postings Yet</h3>
+
+            <p>Create your first job opening to start screening candidates.</p>
+
+            <a href="{{ url_for('create_job') }}" class="btn btn-primary">
+                Create Your First Job
+            </a>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="jobs-page-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

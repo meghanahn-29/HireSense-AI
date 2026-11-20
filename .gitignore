@@ -1,0 +1,12 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+instance/
+uploads/
+*.log
+.DS_Store
+.vscode/
+sample_resume.pdf

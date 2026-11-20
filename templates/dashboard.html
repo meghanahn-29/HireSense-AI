@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container dashboard-container">
+
+    <!-- Welcome Section -->
+    <div class="clean-welcome">
+        <div>
+            <span class="welcome-tag">RECRUITER DASHBOARD</span>
+            <h1>Welcome back, {{ recruiter.username }}!</h1>
+            <p>Manage your hiring process and discover the right talent.</p>
+        </div>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="clean-stats">
+
+        <div class="clean-stat-card">
+            <span class="stat-label">TOTAL JOBS</span>
+            <h2>{{ total_jobs }}</h2>
+            <p>{{ active_jobs }} active positions</p>
+        </div>
+
+        <div class="clean-stat-card">
+            <span class="stat-label">TOTAL CANDIDATES</span>
+            <h2>{{ total_candidates }}</h2>
+            <p>Unique applicants</p>
+        </div>
+
+        <div class="clean-stat-card">
+            <span class="stat-label">AVERAGE MATCH SCORE</span>
+            <h2>{{ average_score }}%</h2>
+            <p>Resume matching performance</p>
+        </div>
+
+        <div class="clean-stat-card">
+            <span class="stat-label">TOTAL APPLICATIONS</span>
+            <h2>{{ total_applications }}</h2>
+            <p>Applications received</p>
+        </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+    <div class="clean-section-heading">
+        <div>
+            <h3>Recruitment Management</h3>
+            <p>Continue managing your recruitment activities.</p>
+        </div>
+    </div>
+
+    <div class="clean-actions">
+
+        <a href="{{ url_for('create_job') }}" class="clean-action-card">
+            <div class="action-symbol">+</div>
+            <h4>Create a Job</h4>
+            <p>Post a new job and define the required skills.</p>
+            <span>Get started →</span>
+        </a>
+
+        <a href="{{ url_for('jobs') }}" class="clean-action-card">
+            <div class="action-symbol">J</div>
+            <h4>Manage Jobs</h4>
+            <p>View your job postings and candidate applications.</p>
+            <span>Explore jobs →</span>
+        </a>
+
+    </div>
+
+
+    <div class="clean-footer">
+        <p>HireSense AI · Intelligent Recruitment Platform</p>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Applicants | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container applicants-container">
+
+    <!-- Page Header -->
+    <div class="applicants-header">
+
+        <div>
+            <span class="applicants-label">CANDIDATE MANAGEMENT</span>
+            <h1>Job Applicants</h1>
+            <p>{{ job.title }}</p>
+        </div>
+
+        <a href="{{ url_for('job_details', job_id=job.id) }}"
+           class="btn btn-outline-light">
+            ← Back to Job
+        </a>
+
+    </div>
+
+
+    <!-- Summary Cards -->
+    <div class="applicant-summary">
+
+        <div class="applicant-summary-card">
+            <span>Total Applicants</span>
+            <h2>{{ total_applicants }}</h2>
+            <small>Applications received</small>
+        </div>
+
+        <div class="applicant-summary-card">
+            <span>Shortlisted</span>
+            <h2>{{ shortlisted_count }}</h2>
+            <small>Selected candidates</small>
+        </div>
+
+        <div class="applicant-summary-card">
+            <span>Pending Review</span>
+            <h2>{{ pending_count }}</h2>
+            <small>Awaiting decision</small>
+        </div>
+
+        <div class="applicant-summary-card">
+            <span>Rejected</span>
+            <h2>{{ rejected_count }}</h2>
+            <small>Not selected</small>
+        </div>
+
+    </div>
+
+
+    <!-- Candidate Table -->
+    <div class="applicant-table-section">
+
+        <div class="applicant-table-header">
+
+            <div>
+                <h3>Candidate Applications</h3>
+                <p>Review candidate profiles and resume screening results.</p>
+            </div>
+
+            <span class="applicant-count">
+                {{ total_applicants }} Applicants
+            </span>
+
+        </div>
+
+
+        {% if results %}
+
+        <div class="table-responsive">
+
+            <table class="table applicant-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Candidate</th>
+                        <th>Email</th>
+                        <th>Skill Match</th>
+                        <th>Overall Score</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in results %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>
+                            <strong class="candidate-name">
+                                {{ item.candidate.name }}
+                            </strong>
+                        </td>
+
+                        <td>{{ item.candidate.email }}</td>
+
+                        <td>
+                            {% if item.analysis %}
+                                {{ item.analysis.skill_match_score or 0 }}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.analysis %}
+                                <strong class="candidate-score">
+                                    {{ item.analysis.overall_score or 0 }}%
+                                </strong>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+
+                            {% set status = item.application.status %}
+
+                            {% if status == 'Shortlisted' %}
+
+                                <span class="candidate-status status-shortlisted">
+                                    Shortlisted
+                                </span>
+
+                            {% elif status == 'Rejected' %}
+
+                                <span class="candidate-status status-rejected">
+                                    Rejected
+                                </span>
+
+                            {% else %}
+
+                                <span class="candidate-status status-pending">
+                                    {{ status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <div class="applicant-action-buttons">
+
+                                <!-- View Details -->
+                                <a href="{{ url_for('candidate_details', application_id=item.application.id) }}"
+                                   class="btn btn-primary btn-sm applicant-view-btn">
+
+                                    View Details
+
+                                </a>
+
+
+                                <!-- Delete Applicant -->
+                                <form method="POST"
+                                      action="{{ url_for('delete_application', application_id=item.application.id) }}"
+                                      onsubmit="return confirm('Are you sure you want to delete this applicant? This action cannot be undone.');">
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm applicant-delete-btn">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="applicants-empty">
+
+            <h4>No Applicants Yet</h4>
+
+            <p>
+                Candidate applications will appear here once resumes are uploaded.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

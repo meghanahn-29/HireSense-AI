@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume Analysis Results | HireSense AI{% endblock %}
+
+{% block content %}
+
+<div class="container results-container">
+
+    <!-- Page Header -->
+    <div class="results-page-header">
+
+        <span class="results-label">AI-POWERED SCREENING</span>
+
+        <h1>Resume Analysis Report</h1>
+
+        <p>
+            Review the candidate's ATS matching score and detected skills.
+        </p>
+
+    </div>
+
+
+    <!-- Main Results Card -->
+    <div class="results-main-card">
+
+        <!-- Candidate Information -->
+        <div class="results-section">
+
+            <h4>Candidate Information</h4>
+
+            <div class="row mt-4">
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="result-info-box">
+
+                        <span>CANDIDATE NAME</span>
+
+                        <h5>{{ name }}</h5>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="result-info-box">
+
+                        <span>EMAIL ADDRESS</span>
+
+                        <h5>{{ email }}</h5>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr class="results-divider">
+
+
+        <!-- ATS Matching Score -->
+        <div class="results-section">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4>ATS Matching Score</h4>
+
+                <span class="results-score">
+                    {{ "%.2f"|format(score) }}%
+                </span>
+
+            </div>
+
+
+            <div class="progress results-progress">
+
+                <div class="progress-bar
+                    {% if score >= 70 %}
+                        bg-success
+                    {% elif score >= 40 %}
+                        bg-warning
+                    {% else %}
+                        bg-danger
+                    {% endif %}"
+                    role="progressbar"
+                    style="width: {{ score }}%;"
+                    aria-valuenow="{{ score }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+
+                </div>
+
+            </div>
+
+
+            <div class="score-scale">
+
+                <span>0% — Low Match</span>
+                <span>100% — High Match</span>
+
+            </div>
+
+
+            <!-- Recommendation -->
+            {% if score >= 70 %}
+
+                <div class="result-recommendation recommendation-success">
+
+                    <span class="recommendation-icon">✓</span>
+
+                    <div>
+                        <h5>Strong Candidate Match</h5>
+                        <p>
+                            This candidate has a strong ATS matching score
+                            and may be considered for shortlisting.
+                        </p>
+                    </div>
+
+                </div>
+
+            {% elif score >= 40 %}
+
+                <div class="result-recommendation recommendation-warning">
+
+                    <span class="recommendation-icon">!</span>
+
+                    <div>
+                        <h5>Further Review Recommended</h5>
+                        <p>
+                            Review the candidate's skills and qualifications
+                            before making a recruitment decision.
+                        </p>
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="result-recommendation recommendation-danger">
+
+                    <span class="recommendation-icon">✕</span>
+
+                    <div>
+                        <h5>Low Candidate Match</h5>
+                        <p>
+                            The candidate has a low ATS matching score.
+                            Review the detected skills before making a decision.
+                        </p>
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <hr class="results-divider">
+
+
+        <!-- Detected Skills -->
+        <div class="results-section">
+
+            <h4>Detected Skills</h4>
+
+            <p class="results-section-description">
+                Skills identified during resume analysis.
+            </p>
+
+
+            {% if skills %}
+
+                <div class="detected-skills-container">
+
+                    {% for skill in skills %}
+
+                        <span class="detected-skill-badge">
+                            ✓ {{ skill }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="no-skills-message">
+                    No matching skills detected in this resume.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Footer Actions -->
+        <div class="results-footer">
+
+            <a href="{{ url_for('home') }}"
+               class="btn btn-primary results-action-btn">
+
+                Analyze Another Resume →
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="results-page-footer">
+        HireSense AI · Intelligent Recruitment Platform
+    </div>
+
+</div>
+
+{% endblock %}

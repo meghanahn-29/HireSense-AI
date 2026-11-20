@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Candidates
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center mb-5">
+
+    <h1 class="fw-bold text-primary">
+
+        Candidate Management
+
+    </h1>
+
+    <p class="text-muted">
+
+        Search, evaluate, download reports and manage candidate applications.
+
+    </p>
+
+</div>
+
+<div class="card shadow border-0">
+
+    <div class="card-body">
+
+        <form method="GET"
+              action="/candidates"
+              class="mb-4">
+
+            <div class="row">
+
+                <div class="col-md-10">
+
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search candidate by name..."
+                           value="{{ search }}">
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-primary w-100">
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <table class="table table-hover table-bordered align-middle">
+
+            <thead class="table-primary">
+
+                <tr>
+
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>ATS Score</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% if candidates %}
+
+                {% for candidate in candidates %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ candidate.name }}</td>
+
+                    <td>{{ candidate.email }}</td>
+
+                    <td>
+
+                        {% if candidate.score >= 35 %}
+
+                            <span class="badge bg-success fs-6">
+
+                                {{ candidate.score|round(2) }}%
+
+                            </span>
+
+                        {% elif candidate.score >= 20 %}
+
+                            <span class="badge bg-warning text-dark fs-6">
+
+                                {{ candidate.score|round(2) }}%
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger fs-6">
+
+                                {{ candidate.score|round(2) }}%
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if candidate.score >= 35 %}
+
+                            <span class="badge bg-success">
+
+                                Shortlisted
+
+                            </span>
+
+                        {% elif candidate.score >= 20 %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Review
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Rejected
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a href="/download/{{ candidate.id }}"
+                           class="btn btn-primary btn-sm">
+
+                            Report
+
+                        </a>
+
+                        <a href="/delete/{{ candidate.id }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Delete this candidate?')">
+
+                            Delete
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="6"
+                        class="text-center text-muted">
+
+                        No candidates found.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<footer class="text-center mt-5 text-muted">
+
+    <hr>
+
+    <p>
+
+        AI Resume Screening System
+
+    </p>
+
+
+
+</footer>
+
+{% endblock %}
+```
